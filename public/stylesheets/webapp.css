@@ -1,84 +1,9 @@
 /* Libraries */
 @import('reset.css');
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300,800);
 
 /* Base  ***********************************************************/
 html {
   font-size: 16px;
-}
-
-html,
-body {
-  height: 100%;
-  font-family: 'Open Sans', sans-serif;
-}
-
-body {
-  font-size: 62.5%;
-  line-height: 20px;
-  padding: 0;
-  margin: 0;
-}
-
-ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-a {
-  color: #FFF;
-  text-decoration: none;
-}
-
-a:active {
-  color: #FFF;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-/* Header *********************************************************/
-.main-header {
-  overflow: auto;
-  height: 80px;
-  margin: 0 10%;
-}
-
-.main-header h1 {
-  display: none;
-}
-
-h1 {
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 300;
-  font-size: 3.6em;
-  color: #FFF;
-  line-height: 1.6em;
-}
-
-h2 {
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 800;
-  font-size: 2.2em;
-  color: #363B48;
-  text-transform: uppercase;
-  text-align: center;
-}
-
-.logo {
-  float: left;
-  margin-top: 20px;
-}
-
-.main-header nav li {
-  float: right;
-  margin: 28px 5px 0 5px;
-}
-
-.main-header .fb-like {
-  z-index: 9999999;
 }
 
 /* Footer **********************************************************/
@@ -143,38 +68,6 @@ footer .external-links a {
   border-top: 5px solid #ED4043;
 }
 
-input[type="text"],
-select {
-  border: none;
-  border-radius: 3px;
-  background: #FFF;
-  color: #666;
-  height: 2em;
-  font-size: 1.1em;
-  margin: 0 5px;
-  padding: 0.2em 10px;
-  vertical-align: middle;
-}
-
-/* Buttons **********************************************************/
-.btn {
-  padding: 0 18px;
-  text-transform: uppercase;
-  border: 0;
-  border-radius: 4px;
-  display: inline-block;
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 700;
-  height: 3em;
-  color: #FFF;
-  cursor: pointer;
-  -webkit-appearance: none;
-}
-
-.btn.primary {
-  background: #52BE7F;
-}
-
 /* Alerts **********************************************************/
 .alert.alert-info {
   border-color: #3A87AD;
@@ -185,50 +78,6 @@ select {
 }
 
 /* Main content *****************************************************/
-#chart-wrapper,
-#main form,
-#extra-name-data,
-#extra-year-data,
-#name-examples,
-#introduction,
-#sharing,
-footer {
-  padding: 20px 20%;
-}
-
-/* Introduction */
-#introduction {
-  background: #363B48 url(/images/background-hero.png) no-repeat center center;
-  text-align: center;
-}
-
-/* Name form */
-#name-form {
-  padding: 20px 0;
-  background: #3E4452;
-  color: #FFF;
-  text-align: center;
-  font-size: 2em;
-}
-
-#name-form input[type="text"] {
-  padding-right: 50px;
-}
-
-#name-form .btn {
-  font-size: 0.7em;
-}
-
-#name-form .help-icon {
-  background: transparent url(/images/help-icon.png) no-repeat center center;
-  width: 24px;
-  height: 24px;
-  vertical-align: middle;
-  opacity: 0.3;
-  position: absolute;
-  top: 13px;
-  right: 20px;
-}
 
 .tooltip {
   position: absolute;
@@ -274,10 +123,7 @@ footer {
 #main-chart {
   min-height: 400px;
   margin: 30px 0;
-}
-
-.jqplot-target {
-  font-family: 'Open Sans', sans-serif;
+  text-align: center;
 }
 
 .chart .tooltip-item:nth-child(n+1) {
@@ -308,7 +154,7 @@ footer {
 }
 
 #main.active #chart-wrapper {
-  color: #363B48;
+  /*color: #363B48;*/
   display: block;
 }
 
@@ -331,49 +177,11 @@ footer {
 }
 
 /* Extra data */
-#extra-name-data,
-#extra-year-data {
-  overflow: auto;
-  display: none;
-}
 
-#extra-name-data header,
-#extra-year-data header {
-  line-height: 2em;
-  margin-bottom: 55px;
-}
-
-#main.active #extra-name-data,
-#main.active #extra-year-data {
-  display: block;
-}
-
-/* Extra name data */
-#extra-name-data li {
-  float: left;
-  width: 13%;
-  text-align: center;
-  margin: 10px 0;
-  font-size: 1.2em;
-  color: #363B48;
-  margin: 0 6%;
-}
-
-#extra-name-data .number-info {
-  font-size: 3em;
-  display: block;
-  margin: 15px 0;
-}
-
-#extra-name-data li:nth-child(1) .number-info { color: #52BE7F; }
-#extra-name-data li:nth-child(2) .number-info { color: #3199D5; }
-#extra-name-data li:nth-child(3) .number-info { color: #F0C340; }
-#extra-name-data li:nth-child(4) .number-info { color: #EA4640; }
 
 /* Extra year data */
-#extra-year-data ul {
-  margin: 20px 0;
-  overflow: auto;
+#extra-year-data svg {
+  margin: 20px;
 }
 
 #extra-year-data .year-chart {
@@ -399,77 +207,30 @@ footer {
   height: 80%;
 }
 
-/* Examples */
-#main.active #name-examples {
-  display: none;
+/*** Lists ***/
+ul {
+  list-style: none;
+  -webkit-margin-before: 0em;
+  -webkit-margin-after: 0em;
+  -webkit-margin-start: 0px;
+  -webkit-margin-end: 0px;
+  -webkit-padding-start: 0px;
 }
 
-#name-examples header {
-  line-height: 3em;
-  margin-bottom: 3em;
-}
-
-#name-examples {
+#extra-name-data ul {
+  width: 60%;
   text-align: center;
+  margin: 30px auto;
 }
 
-#name-examples li {
-  float: left;
-  width: 30%;
-  margin-right: 5%;
-  margin-top: 14px;
-  overflow: hidden;
+#extra-name-data ul li {
+  margin: 10px 0px;
 }
 
-#name-examples li:nth-child(3n+3) {
-  margin-right: 0;
-}
-
-#name-examples ul {
-  overflow: auto;
-  margin-bottom: 30px;
-}
-
-#name-examples li a {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-  height: 170px;
-  line-height: 170px;
-}
-
-#name-examples li img {
-  height: 170px;
-}
-
-#name-examples .example-label {
-  position: absolute;
-  top: 0;
-  left: 0;
-  font-size: 2.6em;
-  width: 100%;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-/* Sharing ****************************************************************/
-#sharing {
-  text-align: center;
-  overflow: auto;
-  display: none;
-}
-
-#sharing li {
-  display: inline-block;
-}
-
-.with-name #sharing {
-  display: block;
-}
 
 /* Media queries **********************************************************/
 @media screen and (max-width: 1000px) {
-  #chart-wrapper,
+  /*#chart-wrapper,
   #main form,
   #extra-name-data,
   #extra-year-data,
@@ -477,20 +238,20 @@ footer {
   #introduction,
   footer {
     padding: 16px 10%;
-  }
+  }*/
 
-  #extra-year-data .year-chart {
+  /*#extra-year-data .year-chart {
     margin-top: 10px;
-  }
+  }*/
 
   #extra-name-data header, #extra-year-data header {
     margin-bottom: 0;
   }
 }
 
-@media screen and (max-width: 900px) {
+/*@media screen and (max-width: 900px) {
   #chart-wrapper,
-  #main form,
+  /*#main form,*/
   #extra-name-data,
   #extra-year-data,
   #name-examples,
@@ -498,7 +259,7 @@ footer {
   footer {
     padding: 14px 5%;
   }
-}
+}*/
 @media screen and (max-width: 800px) {
   h1 {
     font-size: 2.6em;
@@ -506,12 +267,6 @@ footer {
 
   h2 {
     font-size: 2em;
-  }
-
-  #main form .btn {
-    clear: left;
-    margin: 15px auto 0 auto;
-    display: block;
   }
 
   #name-examples header {
@@ -548,4 +303,268 @@ footer {
   .main-header {
     margin: 0 5%;
   }
+}
+
+.main-form-title {
+  text-align:center;
+  position: relative;
+  z-index: 1;
+  margin-bottom:16px;
+}
+.main-form-title h1 {
+  font-weight: 700;
+}
+
+/******
+ * Line Chart
+ *****/
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.line0, .line1 {
+  fill: none;
+  stroke-width: 3px;
+}
+
+.line0 {
+  stroke: aquamarine;
+}
+
+.line1 {
+  stroke: orange;
+}
+
+.hover-line {
+  fill: none;
+  pointer-events: all;
+}
+
+.focus circle {
+  fill: none;
+  stroke: steelblue;
+}
+
+/* News Modifications Francisco López */
+
+/* RESET */
+section {
+  padding: 0px;
+}
+#main-chart {
+  display: none;
+}
+.bubblefemale {
+  display: none;
+}
+/* RESET */
+.navbar-brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button {
+background-color: #3C3C3C;
+border: 0;
+border-radius: 10px;
+padding: 10px;
+font-weight: 400;
+width: 100%;
+}
+p {
+  font-size: 20px;
+  font-weight: 300;
+  margin: 20px auto;
+  max-width: 80%;
+  line-height: 1.3;
+}
+.containerCenter {
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+height: 100vh;
+width: 100vw;
+padding: 0px;
+}
+.header {
+color: #5D5D5D;
+text-align: center;
+max-width: 800px;
+}
+.titleContainer {
+display: flex;
+align-items: center;
+flex-direction: column;
+justify-content: center;
+}
+.title {
+font-weight: 600;
+font-size: 22px;
+}
+.subTitle {
+font-weight: normal;
+font-size: 15px;
+}
+#containerSlide {
+  display: none;
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+#firstheader {
+position: fixed;
+top: 0px;
+left: 0px;
+width: 100%;
+z-index: 500;
+}
+#section1 {
+  background: white;
+  padding: 64px 20px 0px 20px;
+}
+#titleIntroduction {
+height: 35%;
+}
+#introduction {
+  background-image: url('/images/nuevaTrama.png');
+  background-size: auto;
+  text-shadow: none;
+  height: 65%;
+  color: white;
+  padding: 20px;
+}
+
+#firstheader {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  z-index: 9999;
+}
+.panels {
+  height: 100vh;
+  overflow: hidden;
+  padding: 0;
+  border-bottom: silver 1px solid;
+}
+.headerSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.headerTitle {
+  font-weight: 600;
+  font-size: 32px;
+  color: white;
+  text-align: center;
+  width: 550px;
+}
+#introduction label {
+  font-size: 25px;
+  font-weight: 300;
+  width: 100%;
+  text-align: center;
+}
+.lastLabel {
+  margin-top: 20px;
+}
+#introduction input {
+border: solid 2px #F6712E;
+border-radius: 10px;
+background-color: orange;
+color: white;
+padding: 10px;
+outline: none;
+width: 100%;
+text-align: center;
+}
+#introduction input::-webkit-input-placeholder {
+color: white;
+font-weight: 100;
+text-align: center;
+}
+#introduction input:-moz-placeholder {
+color: white;
+font-weight: 100;
+text-align: center;
+}
+#introduction input::-moz-placeholder {
+color: white;
+font-weight: 100;
+text-align: center;
+}
+#introduction input:-ms-input-placeholder {
+color: white;
+font-weight: 100;
+text-align: center;
+}
+#introduction button {
+margin-top: 30px;
+}
+#section2 {
+background-color: white;
+padding: 64px 20px 0px 20px;
+}
+#section3 {
+background-color: #F5712E;
+padding: 64px 20px 0px 20px;
+}
+#extra-name-data {
+display: flex;
+flex-direction: column;
+color: white;
+align-items: center;
+}
+#extra-name-data h2 {
+color: white;
+}
+#nameDataContainer {
+text-align: center;
+}
+#section4 {
+background-color: white;
+padding: 64px 20px 0px 20px;
+}
+#section5 {
+background-color: #E6E7E8;
+padding: 64px 20px 0px 20px;
+}
+#section5 button {
+margin-top: 15px;
+max-width: 450px;
+}
+#section5 p {
+  margin: 10px;
+  font-size: 14px;
+}
+
+@media (min-width: 600px){
+  p,
+  #introduction label,
+  .title {
+    font-size: 45px;
+  }
+  p {
+    margin: 25px auto;
+  }
+  button,
+  .subTitle,
+  #section5 p {
+    font-size: 30px;
+    margin: 25px auto;
+  }
+}
+@media (min-width: 1024px){
+
 }

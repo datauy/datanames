@@ -1,19 +1,18 @@
 jQuery(function ($) {
 
+  var variableGenero;
   var NAMES_BASE_URL = "/names/"
     , YEARS_BASE_URL = "/years/"
-    , MIN_YEAR = 1960
-    , MAX_YEAR = 2010
+    , MIN_YEAR = 1922
+    , MAX_YEAR = 2015
     , statisticsCalculator = {}
-    , DataProcessor = function (names, year) {
+    , DataProcessor = function (names, year, gender = 'male') {
       this.names = names;
       this.processedNames = this._processNames(names);
       this.year = this._processYear(year);
+      this.gender = gender; // dato genero
     };
 
-  /**
-   *
-   */
   DataProcessor.prototype.fetchData = function (callback) {
     var namesDone = 0
       , yearDone = ! this.year
@@ -24,7 +23,7 @@ jQuery(function ($) {
 
     checkDone = function () {
       if ((namesDone === this.processedNames.length) && yearDone) {
-        statistics = this._fetchStatistics(namesData[mainName], yearData);
+        statistics = this._fetchStatistics(namesData[mainName], this.year);
         $processing.resolve({
           names: this.names,
           processedNames: this.processedNames,
@@ -46,6 +45,17 @@ jQuery(function ($) {
 
       (function (newName) {
         this._fetchNameData(newName).done(function (nameDataResponse) {
+          window.GENDER = nameDataResponse[0].gender; // agrego genero global
+          variableGenero = nameDataResponse[0].gender; // agrego genero global
+
+          if (window.GENDER == undefined || window.GENDER == 'female'){
+            $('#section3')[0].style.backgroundColor = '#F5712E';
+            // document.querySelectorAll('.line0')[0].style.stroke = '#F5712E';
+          } else {
+            $('#section3')[0].style.backgroundColor = '#42BD5C';
+            // document.querySelectorAll('.line0')[0].style.stroke = '#42BD5C';
+          }
+
           namesDone += 1;
           namesData[newName] = nameDataResponse;
           checkDone();
@@ -66,11 +76,8 @@ jQuery(function ($) {
     }
 
     return $processing;
-  };
+  }; // esto se usa ?
 
-  /**
-   *
-   */
   DataProcessor.prototype._fetchNameData = function (processedName) {
     return $.ajax({
       url: NAMES_BASE_URL + processedName + ".json",
@@ -79,9 +86,6 @@ jQuery(function ($) {
     });
   };
 
-  /**
-   *
-   */
   DataProcessor.prototype._fetchYearData = function () {
     return $.ajax({
       url: YEARS_BASE_URL + this.year + ".json",
@@ -90,9 +94,6 @@ jQuery(function ($) {
     });
   };
 
-  /**
-   *
-   */
   DataProcessor.prototype._processNames = function (names) {
     var processedNames = []
       , i, length
@@ -104,9 +105,6 @@ jQuery(function ($) {
     return processedNames;
   };
 
-  /**
-   *
-   */
   DataProcessor.prototype._processName = function (name) {
     var replacements = [
       [/á/, "a"],
@@ -133,9 +131,6 @@ jQuery(function ($) {
     return name;
   };
 
-  /**
-   *
-   */
   DataProcessor.prototype._processYear = function (yearStr) {
     var year = parseInt(yearStr, 10);
 
@@ -147,24 +142,17 @@ jQuery(function ($) {
     }
   };
 
-  /**
-   *
-   */
-  DataProcessor.prototype._fetchStatistics = function (nameData) {
+  DataProcessor.prototype._fetchStatistics = function (nameData, currYear) {
     var statistics = []
       , name = this.names[0];
 
     statistics.push(statisticsCalculator.totalNames(name, nameData));
-    statistics.push(statisticsCalculator.yearsWithName(name, nameData));
-    statistics.push(statisticsCalculator.minYear(name, nameData));
-    statistics.push(statisticsCalculator.maxYear(name, nameData));
+    statistics.push(statisticsCalculator.minMaxYear(name, nameData));
+    statistics.push(statisticsCalculator.currentYear(name, nameData, currYear));
 
     return statistics;
   };
 
-  /**
-   *
-   */
   statisticsCalculator.totalNames = function (name, nameData) {
     var totalQuantity = 0
     , length = nameData.length
@@ -174,17 +162,11 @@ jQuery(function ($) {
       totalQuantity += nameData[i].quantity;
     }
 
-    return {
-      title: totalQuantity,
-      description: name + " en total"
-    };
+    return "Entre los años 1922 y 2015, nacieron <b>" + totalQuantity + " " + capitalizeFirstLetter(name) + "</b>.";
   };
 
-  /**
-   *
-   */
-  statisticsCalculator.maxYear = function (name, nameData) {
-    var maxYear = 1960
+  statisticsCalculator.minMaxYear = function (name, nameData) {
+    var maxYear = 1922
       , maxYearNumber = 0
       , length = nameData.length
       , i = 0;
@@ -196,22 +178,12 @@ jQuery(function ($) {
       }
     }
 
-    return {
-      title: maxYear,
-      description: "es el a&ntilde;o con m&aacute;s " + name
-    };
-  };
-
-  /**
-   *
-   */
-  statisticsCalculator.minYear = function (name, nameData) {
     var minYear = MIN_YEAR
       , minYearNumber = 9999999
       , length = nameData.length
       , year, quantity, i;
 
-    for (year = MIN_YEAR; year <= MAX_YEAR; year += 1) {
+    for (year = MIN_YEAR; year <= MAX_YEAR; year++) {
       quantity = 0;
       for (i = 0; i < nameData.length; i += 1) {
         if (nameData[i].year == year) {
@@ -224,27 +196,34 @@ jQuery(function ($) {
       }
     }
 
-    return {
-      title: minYear,
-      description: "es el a&ntilde;o con menos " + name
-    };
+    return "Tu nombre alcanzó la mayor popularidad en <b>" + maxYear + "</b> y la menor en <b>" + minYear + "</b>.";
   };
 
-  /**
-   *
-   */
-  statisticsCalculator.yearsWithName = function (name, nameData) {
-    var yearsWithName = nameData.length
-    , yearsWithoutName;
+  statisticsCalculator.currentYear = function (name, nameData, currYear) {
+    var indexCurrYear = currYear - MIN_YEAR;
+    var numNamesCurrYear = nameData[indexCurrYear].quantity;
 
-    yearsWithoutName = (MAX_YEAR - MIN_YEAR + 1) - yearsWithName;
+    if(numNamesCurrYear == 1){
+      return "El año en el que naciste, solo <b>" + numNamesCurrYear + "</b> persona se llamó igual que vos. ¡Wow!";
+    } else {
+      return "El año en el que naciste, otras <b>" + numNamesCurrYear + "</b> personas se llamaron igual que vos. ¡Wow!";
+    }
+  }
 
-    return {
-      title: yearsWithoutName,
-      description: "a&ntilde;os sin " + name
-    };
-  };
+  function capitalizeFirstLetter(name) {
+    var nombres = name.split(" ");
+    var connectors = ["de", "los", "del", "las", "la", "el"];
+
+    // Solo capitalizar palabra si no es un conector
+    for (var i=0; i < nombres.length; i++) {
+      if (connectors.indexOf(nombres[i]) == -1)
+        nombres[i] = nombres[i].charAt(0).toUpperCase() + nombres[i].slice(1);
+    }
+
+    name = nombres.join(" ");
+
+    return name;
+  }
 
   window.DataProcessor = DataProcessor;
-
 });

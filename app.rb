@@ -6,7 +6,7 @@ class App < Sinatra::Base
 
   helpers Helpers::Assets
 
-  APP_DOMAIN = 'data.180.com.uy'
+  APP_DOMAIN = 'casarosada.gob.ar/nombres'
 
   configure do
     set :views, root_path('views')
@@ -14,8 +14,7 @@ class App < Sinatra::Base
     set :static_cache_control, [:public, max_age: 60 * 60 * 24]
     set :environment, (ENV['RACK_ENV'] || 'development').to_sym
 
-    set :app_domain, settings.development? ? /localhost/ : APP_DOMAIN
-
+    set :app_domain, '10.1.126.83:9393'
     enable :static
   end
 
@@ -28,7 +27,7 @@ class App < Sinatra::Base
   end
 
   get %r{/(?:nombre/([^/]+)(?:/(\d+))?)?$} do |main_name, year|
-    if settings.app_domain === request.env['HTTP_HOST']
+    #if settings.app_domain === request.env['HTTP_HOST']
       cache_control :public, :must_revalidate, max_age: 60 * 60 * 24
       names = (params[:others] || '').split(',')
       names.unshift(main_name) if main_name
@@ -37,8 +36,8 @@ class App < Sinatra::Base
         main_name: main_name,
         year: year ? year.to_i : nil
       })
-    else
-      redirect("http://#{APP_DOMAIN}", 301)
-    end
+    #else
+    #  redirect("http://#{APP_DOMAIN}", 301)
+    #end
   end
 end

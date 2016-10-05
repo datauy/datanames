@@ -25,18 +25,14 @@ jQuery(function ($) {
     };
   }
 
-  var MIN_YEAR = 1960
-    , MAX_YEAR = 2010
+  var MIN_YEAR = 1922
+    , MAX_YEAR = 2015
     , App = {
-      /**
-       *
-       */
+
       initialize: function () {
         this.bindEvents();
       },
-      /**
-       *
-       */
+
       bindEvents: function () {
         var $form = $("#name-form");
 
@@ -51,6 +47,7 @@ jQuery(function ($) {
 
           if (mainName !== "") {
             url = "/nombre/" + mainName + "/" + year;
+
             if (namesLength > 0) {
               for (i = 0; i < namesLength; i += 1) {
                 names[i] = names[i].replace(/^\s+|\s+$/g, '');
@@ -65,9 +62,7 @@ jQuery(function ($) {
           }
         }.bind(this));
       },
-      /**
-       *
-       */
+
       render: function () {
         var names = $("#name").val().split(",")
           , year = $("#year").val()
@@ -76,189 +71,237 @@ jQuery(function ($) {
         this._clearFormErrors();
 
         processor = new DataProcessor(names, year);
+
         processor.fetchData().done(function (data) {
+
           this.displayStatistics(data.statistics);
           this.processNamesData(data.processedNames, data.year, data.namesData);
           if (data.year) {
-            $("#extra-year-data .specific-year").text(data.year);
-            this.displayYearStatistics(data.yearData, "male");
-            this.displayYearStatistics(data.yearData, "female");
+            $("#extra-year-datas .specific-year").text(data.year);
+            this.displayYearStatistics(data.yearData, 'female', data.year);
           }
         }.bind(this)).fail(function (error) {
           this._displayError(error);
         }.bind(this));
       },
-      /**
-       *
-       */
+
       displayStatistics: function (statistics) {
-        var $container = $("#extra-name-data ul")
-          , i, length, $li, title, desc;
+        var $container = $("#nameDataContainer")
+          , i, length, $p, title, desc;
 
         $container.empty();
 
         for (i = 0, length = statistics.length; i < length; i += 1) {
-          title = statistics[i].title;
-          desc = statistics[i].description;
-          $li = $("<li><span class=\"number-info\">" + title + "</span>" + desc + "</li>");
-          $container.append($li);
+
+          $p = $("<p>" + statistics[i] + "</p>");
+
+          $container.append($p);
         }
       },
+
       /**
-       *
+       * Bubble Chart de nombres
        */
-      displayYearStatistics: function (yearData, gender) {
-        var namesQuantity = []
-          , genderIdentity = gender[0]
-          , genderData = yearData[genderIdentity]
-          , i, length, name, quantity;
+      displayYearStatistics: function (yearData, gender, year) {
 
-        $("#" + gender + "-year-chart").empty();
+        var classBubbles = "bubble" + gender;
+        var diameter = 450; // Max size of the bubbles
 
-        for (i = genderData.length - 1; i >= 0; i -= 1) {
-          name = this.humanizeName(genderData[i].name);
-          quantity = genderData[i].quantity;
-          namesQuantity.push([name, quantity]);
+        var bubble = d3.layout.pack()
+            .sort(null)
+            .size([diameter, diameter])
+            .padding(1.5);
+
+        // SVG
+        var svg = d3.select("#extra-year-data")
+            .append("svg")
+            .attr("width", diameter)
+            .attr("height", diameter)
+            .attr("class", classBubbles);
+
+        // Colores femenino y masculino
+        var color = (gender == "female") ? "#F5712E" : "#42BD5C";
+
+        // Path a los datos de los años
+        var path = "/years/" + year + ".json";
+
+        d3.json(path, function(error, data){
+
+          if (gender == "female") {
+            // Convert numerical values from strings to numbers
+            // Data de top 10 femenina
+            data = data.f.map(function(d){ d.value = +d.quantity; return d; });
+          } else {
+            // Data de top 10 masculina
+            data = data.m.map(function(d){ d.value = +d.quantity; return d; });
+          }
+          var nodes, bubbles;
+
+          // Bubbles needs very specific format, convert data to this.
+          nodes = bubble.nodes({children:data}).filter(function(d) { return !d.children; });
+
+          // Setup the chart
+          bubbles = svg.append("g")
+              .attr("transform", "translate(0,0)")
+              .selectAll(".bubble")
+              .data(nodes)
+              .enter();
+
+          // Create the bubbles
+          bubbles.append("circle")
+              .attr("r", function(d){ return d.r; })
+              .attr("cx", function(d){ return d.x; })
+              .attr("cy", function(d){ return d.y; })
+              .style("fill", function(d) { return color; });
+
+          // Format the text for each bubble
+          bubbles.append("text")
+              .attr("x", function(d){ return d.x; })
+              .attr("y", function(d){ return d.y + 5; })
+              .attr("text-anchor", "middle")
+              .text(function(d){ return processNameForBubble(d.name); })
+              .style({
+                  "fill":"#646363",
+                  "font-family":"Helvetica Neue, Helvetica, Arial, san-serif",
+                  "font-size": "14px"
+              });
+
+        });
+
+        function toTitleCase(str) {
+            return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
         }
 
-        $.jqplot(gender + "-year-chart", [namesQuantity], {
-          title: {
-            show: false
-          },
-          seriesColors: ["#363B48", "#00B233", "#3199D5", "#EA4640", "#F0C340", "#9D58B0", "#52BE7F", "#960CE8", "#E8660C", "#B21212"],
-          seriesDefaults: {
-            renderer: $.jqplot.DonutRenderer,
-            shadow: false,
-            markerOptions: {
-              shadow: false,
-              show: false
-            }
-          },
-          grid: {
-            drawGridlines: true,
-            drawBorder: false,
-            borderWidth: 0,
-            shadow: false,
-            background: "#FFF"
-          },
-          highlighter: {
-            show: true,
-            sizeAdjust: 2.5,
-            useAxesFormatters: false,
-            tooltipSeparator: " &mdash; ",
-            tooltipFormatString: "<span class=\"tooltip-item\">%s</span>"
-          },
-          legend: {
-            show: true
-          }
-        });
+        function processNameForBubble(name) {
+            var processedName = window.DataProcessor.prototype._processName(name);
+
+            processedName = processedName.replace("_", " ");
+
+            return toTitleCase(processedName);
+        }
+
       },
       /**
-       *
+       * Line Chart de nombres
        */
       processNamesData: function (names, year, namesData) {
-        var serie = []
-          , mainName = names[0]
-          , series = {}
-          , yearQuantityMap, namesLength, serieLength, i, j, serie, name;
-
-        for (i = 0, namesLength = names.length; i < namesLength; i += 1) {
-          name = names[i];
-          serie = [];
-          series[name] = serie;
-          name = names[i];
-          nameData = namesData[name];
-          yearQuantityMap = {};
-          // Map all data years to their quantity
-          for (j = 0, length = nameData.length; j < length; j += 1) {
-            yearQuantityMap[nameData[j].year] = nameData[j].quantity;
-          }
-          // Go through all years and create a pair (with 0 as default quantity)
-          for (j = MIN_YEAR; j <= MAX_YEAR; j += 1) {
-            serie.push([j, yearQuantityMap[j] || 0]);
-          }
-        }
-
-        series["me"] = [[year, yearQuantityMap[year]]];
-        names.push("me");
-
-        this.renderChart(names, series);
-      },
-      /**
-       *
-       */
-      renderChart: function (names, series) {
-        var quantitySeries = []
-          , i = 0
-          , namesSize = names.length
-          , chart, yaxisOptions;
-
-        for (i = 0; i < namesSize; i += 1) {
-          quantitySeries.push(series[names[i]]);
-        }
-
-        yaxisOptions = this._getYaxisOptions(quantitySeries);
-        seriesOptions = this._getSeriesOptions(names, quantitySeries);
 
         $("#main").addClass("active");
         $("#main-chart").empty();
 
-        $.jqplot("main-chart", quantitySeries, {
-          title: {
-            show: false
-          },
-          seriesColors: ["#363B48", "#3199D5", "#EA4640", "#F0C340", "#9D58B0", "#52BE7F", "#960CE8", "#E8660C", "#B21212", "#00B233"],
-          seriesDefaults: {
-            shadow: false,
-            markerOptions: {
-              shadow: false,
-              style: "circle",
-              show: false
-            }
-          },
-          series: seriesOptions,
-          grid: {
-            drawGridlines: true,
-            drawBorder: false,
-            borderWidth: 0,
-            shadow: false,
-            background: "#FFF",
-            gridLineColor: "#E4E4E4"
-          },
-          axesDefaults: {
-            showTickMarks: false,
-            tickOptions: {
-              showMark: false
-            }
-          },
-          axes: {
-            xaxis: {
-              ticks: [[1958, ""], 1960, 1970, 1980, 1990, 2000, 2010, [2012, ""]],
-              tickOptions: {
-                showGridline: false,
-                formatString: "%d"
-              }
-            },
-            yaxis: yaxisOptions
-          },
-          highlighter: {
-            show: true,
-            sizeAdjust: 2.5,
-            useAxesFormatters: false,
-            tooltipSeparator: " &mdash; ",
-            tooltipFormatString: "<span class=\"tooltip-item\">%d</span>"
-          },
-          cursor: {
-            show: false
-          },
-          legend: {
-            show: true
+        var margin = {top: 20, right: 50, bottom: 30, left: 50},
+            width = 800 - margin.left - margin.right,
+            height = 350 - margin.top - margin.bottom;
+
+        var bisectDate = d3.bisector(function(d) { return d.year; }).left;
+
+        var x = d3.time.scale()
+            .range([0, width]);
+
+        var y = d3.scale.linear()
+            .range([height, 0]);
+
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom")
+            .tickFormat(d3.format("d"))
+            .tickValues([1922, 1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2015]);
+
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left");
+
+        var line = d3.svg.line()
+            .x(function(d) {
+              return x(d.year); })
+            .y(function(d) { return y(d.percentage); });
+
+
+        var svg = d3.select("#main-chart").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var totalMin, totalMax;
+
+        // Iterate over all names to figure out the max and min for the percentages
+        for (var i = 0, namesLength = names.length; i < namesLength; i += 1) {
+          name = names[i];
+          data = namesData[name];
+
+          currMinMax = d3.extent(data, function(d) { return d.percentage; });
+
+          currMin = currMinMax[0];
+          currMax = currMinMax[1];
+          if (i == 0) {
+            totalMin = currMin;
+            totalMax = currMax;
+          } else {
+            if (currMin < totalMin) { totalMin = currMin; }
+            if (currMax < totalMax) { totalMax = currMax; }
           }
-        });
+        }
+
+        x.domain([1922, 2015]);
+        y.domain([totalMin, totalMax]);
+
+        svg.append("g")
+              .attr("class", "x axis")
+              .attr("transform", "translate(0," + height + ")")
+              .call(xAxis);
+
+        // Iterate over all names to figure out the max and min for the percentages
+        for (var i = 0, namesLength = names.length; i < namesLength; i += 1) {
+          name = names[i];
+          data = namesData[name];
+
+          data.forEach(function(d) {
+            d.year = +d.year;
+            d.percentage = +d.percentage;
+          });
+
+          data.sort(function(a, b) {
+            return a.year - b.year;
+          });
+
+          svg.append("path")
+              .datum(data)
+              .attr("class", "line" + i.toString())
+              .attr("d", line);
+
+          var focus = svg.append("g")
+              .attr("class", "focus")
+              .style("display", "none");
+
+          focus.append("circle")
+              .attr("r", 4.5);
+
+          focus.append("text")
+              .attr("x", 9)
+              .attr("dy", ".35em");
+
+          svg.append("rect")
+              .attr("class", "hover-line")
+              .attr("width", width)
+              .attr("height", height)
+              .on("mouseover", function() { focus.style("display", null); })
+              .on("mouseout", function() { focus.style("display", "none"); })
+              .on("mousemove", mousemove);
+
+          function mousemove() {
+            var x0 = x.invert(d3.mouse(this)[0]),
+                i = bisectDate(data, x0, 1),
+                d0 = data[i - 1],
+                d1 = data[i],
+                d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+            focus.attr("transform", "translate(" + x(d.year) + "," + y(d.percentage) + ")");
+            var textHover = (Math.round(d.percentage*100) / 100).toString() + "%";
+            focus.select("text").text(textHover);
+          }
+        }
       },
-      /**
-       *
-       */
+
       humanizeName: function (name) {
         var processedName = name.replace(/_(.)?/, function (fullMatch, group0) {
           return typeof group0 === "string" ? " " + group0.toUpperCase() : "";
@@ -272,9 +315,7 @@ jQuery(function ($) {
 
         return processedName;
       },
-      /**
-       *
-       */
+
       _displayError: function (error) {
         var $nameField = $(".form-field:has(#name)")
           , $yearField = $(".form-field:has(#year)");
@@ -294,9 +335,7 @@ jQuery(function ($) {
 
         }
       },
-      /**
-       *
-       */
+
       _displayInputError: function ($field, errorMessage) {
         var errorHTML = [
           "<div class=\"form-error\">",
@@ -308,17 +347,13 @@ jQuery(function ($) {
         $field.find(".form-input").append(errorHTML);
         $field.addClass("error");
       },
-      /**
-       *
-       */
+
       _clearFormErrors: function () {
         var $form = $("#name-form");
         $form.find(".form-field.error").removeClass("error");
         $form.find(".form-error").remove();
       },
-      /**
-       *
-       */
+
       _getYaxisOptions: function (series) {
         var yaxisOptions = { min: 0 }
           , maxValue = 0
@@ -339,9 +374,7 @@ jQuery(function ($) {
 
         return yaxisOptions;
       },
-      /**
-       *
-       */
+
       _getSeriesOptions: function (names, series) {
         var seriesOptions = []
           , i, length;
@@ -376,4 +409,17 @@ jQuery(function ($) {
 
   $(".help-tooltip").tooltip();
 
+  // Ocultar el placeholder del input cuando el usuario hace foco en el elemento.
+  var formSelector = $('input');
+  var placeholderData;
+
+  formSelector.each(function(key, value){
+    value.addEventListener('focusin', function(){
+      placeholderData = $(this).attr('placeholder');
+      $(this).attr('placeholder', '');
+    })
+    value.addEventListener('focusout', function(){
+      $(this).attr('placeholder', placeholderData);
+    })
+  });
 });

@@ -1,125 +1,61 @@
-<form id="name-form" action="/" method="POST" autocomplete="off">
-  <div class="form-field">
-    <label for="name" class="form-label">Me llamo</label>
-    <div class="form-input">
-      <input type="text" id="name" name="name" value="<%= names.join(', ') %>" placeholder="Maria o Juan, Carlos"/>
-      <span class="help-tooltip help-icon" title="Busc&aacute; tu nombre o comparalo con otros, separ&aacute;ndolos con una coma"></span>
-    </div>
-  </div>
-  <div class="form-field">
-    <label for="year" class="form-label">y nac&iacute; en</label>
-    <select id="year" name="year">
-      <% (1960..2010).each do |sel_year| %>
-        <option value="<%= sel_year %>" <% if year == sel_year %>selected="selected"<% end %>>
-          <%= sel_year %>
-        </option>
-      <% end %>
-    </select>
-  </div>
-  <input type="submit" name="submit" class="btn primary" value="Continuar" />
-</form>
-
-<section id="chart-wrapper">
-  <header>
-    <h2>Tus estad&iacute;sticas</h2>
+<!-- <section id="section2" class="section containerCenter">
+  <section id="main">
+    <section id="chart-wrapper">
+      <header class="titleContainer">
+        <h2 class="header title">La popularidad de tu nombre</h2>
+        <aside class="header subTitle">Datos expresados en 1 x 1.000 nombres registrados por año.</aside>
+      </header>
+      <div id="main-chart" class="chart titleContainer"></div>
+    </section>
+  </section>
+</section>
+<section id="section3" class="section containerCenter">
+  <section id="extra-name-data">
+      <header class="titleContainer">
+          <h2 class="header title">¿Sab&iacute;as qué?</h2>
+      </header>
+      <div id="nameDataContainer"></div>
+  </section>
+</section>
+<section id="section4" class="section containerCenter">
+  <section id="extra-year-data">
+      <header class="headerSection">
+          <h2 class="header title">Nombres más frecuentes</h2>
+          <aside class="header subTitle">Datos expresados según períodos.</aside>
+      </header>
+      <div id="female-year-chart" class="chart year-chart"></div>
+      <div id="male-year-chart" class="chart year-chart"></div>
+    </section>
+</section>
+<footer id="section5" class="section containerCenter">
+    <p>Datos provistos por la Dirección Nacional de las Personas - Secretaría de Interior - Ministerio del Interior , Obras Públicas y Vivienda.</p>
+    <p>Desarrollo: Dirección de Servicios Analíticos, Subsecretaría de Innovación Pública y Gobierno Abierto, Secretaría de Gestión de Innovación Pública, Ministerio de Modernización</p>
+    <p>¿desarrolladores de Uruguay??</p>
+    <p>Descarga</p>
+    <button type="button" name="button">CSV</button>
+</footer> -->
+<section id="section2" class="section">
+  <header class="sectionHeader containerCenter">
+      <h2 class="headerTitle">La popularidad de tu nombre</h2>
+      <aside class="headerSubTitle">Datos expresados en 1 x 1.000 nombres registrados por año.</aside>
   </header>
-  <div id="main-chart" class="chart"></div>
+  <section class="sectionContainer containerCenter">
+    <div id="main-chart" class="chart"></div>
+  </section>
 </section>
-
-<section id="extra-name-data">
-  <header>
-    <h2>M&aacute;s datos</h2>
+<section id="section3" class="section containerCenter">
+  <section class="sectionContainerFull containerCenter">
+    <h2 class="headerTitle">¿Te imaginabas esto?</h2>
+    <div id="nameDataContainer"></div>
+  </section>
+</section>
+<section id="section4" class="section containerCenter">
+  <header class="sectionHeader containerCenter">
+      <h2 class="headerTitle">Nombres más frecuentes</h2>
+      <aside class="headerSubTitle">Datos expresados según períodos.</aside>
   </header>
-  <ul></ul>
+  <section class="sectionContainer containerCenter">
+        <!-- <div id="female-year-chart" class="chart year-chart"></div>
+        <div id="male-year-chart" class="chart year-chart"></div> -->
+  </section>
 </section>
-
-<section id="extra-year-data">
-  <header>
-    <h2>Popular en <span class="specific-year"></span></h2>
-  </header>
-  <div id="female-year-chart" class="chart year-chart"></div>
-  <div id="male-year-chart" class="chart year-chart"></div>
-</section>
-
-<section id="sharing">
-  <ul>
-    <li>
-      <a href="https://twitter.com/share" class="twitter-share-button" data-via="DataUY" data-lang="es" data-related="portal180">Twittear</a>
-      <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-    </li>
-    <li>
-      <div class="fb-share-button" data-href="<%= url %>" data-width="80"></div>
-    </li>
-  </ul>
-</section>
-
-<section id="name-examples">
-  <header>
-    <h2>Ejemplos</h2>
-  </header>
-  <ul>
-    <li>
-      <a href="/nombre/diego/1979">
-        <img src="<%= asset_path('images/examples/diego.jpg') %>" alt="Diego" />
-        <span class="example-label">Diego</span>
-      </a>
-    </li>
-    <li>
-      <a href="/nombre/jose/2010">
-        <img src="<%= asset_path('images/examples/jose.jpg') %>" alt="Jose" />
-        <span class="example-label">Jos&eacute;</span>
-      </a>
-    </li>
-    <li>
-      <a href="/nombre/juana/1979">
-        <img src="<%= asset_path('images/examples/juana.jpg') %>" alt="Juana" />
-        <span class="example-label">Juana</span>
-      </a>
-    </li>
-    <li>
-      <a href="/nombre/angelina/2001">
-        <img src="<%= asset_path('images/examples/angelina.jpg') %>" alt="Angelina" />
-        <span class="example-label">Angelina</span>
-      </a>
-    </li>
-    <li>
-      <a href="/nombre/britney/1999">
-        <img src="<%= asset_path('images/examples/britney.jpg') %>" alt="Britney" />
-        <span class="example-label">Britney</span>
-      </a>
-    </li>
-    <li>
-      <a href="/nombre/enzo/1983">
-        <img src="<%= asset_path('images/examples/enzo.jpg') %>" alt="Enzo" />
-        <span class="example-label">Enzo</span>
-      </a>
-    </li>
-    <li>
-      <a href="/nombre/fidel/1960">
-        <img src="<%= asset_path('images/examples/fidel.jpg') %>" alt="Fidel" />
-        <span class="example-label">Fidel</span>
-      </a>
-    </li>
-    <li>
-      <a href="/nombre/flavia/1990">
-        <img src="<%= asset_path('images/examples/flavia.jpg') %>" alt="Flavia" />
-        <span class="example-label">Flavia</span>
-      </a>
-    </li>
-    <li>
-      <a href="/nombre/shakira/2000">
-        <img src="<%= asset_path('images/examples/shakira.jpg') %>" alt="Shakira" />
-        <span class="example-label">Shakira</span>
-      </a>
-    </li>
-  </ul>
-</section>
-
-<div id="fb-root"></div>
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/es_ES/all.js#xfbml=1&appId=287378674701911";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
